@@ -48,7 +48,7 @@ class SiteHeader extends React.Component {
     if (this.props.canAccessAdmin) {
       menuList.push(<a href={this.getEditorLink()} target="_blank" rel="noopener noreferrer"><span><Icon className="fa fa-pencil-square-o" />Journal Editor</span></a>);
     }
-    menuList.push({ label: 'Logout', href: this.props.logoutPath });
+    menuList.push({ label: 'Logout', href: this.props.lmsIntegration ? this.props.logoutPath : '/logout' });
     return menuList;
   }
 
@@ -87,8 +87,13 @@ class SiteHeader extends React.Component {
                   />
                 </div>
               ) : (
-                <Hyperlink className="btn control-btn" destination={this.props.loginPath} content="Login" />
+                this.props.lmsIntegration &&
+                  <Hyperlink className="btn control-btn" destination={this.props.loginPath} content="Login" />
               )
+            }
+            {
+              !this.props.isAuthenticated && !this.props.lmsIntegration &&
+                <Link className="btn control-btn" to="/login">Login</Link>
             }
           </div>
         </div>
@@ -115,6 +120,7 @@ SiteHeader.defaultProps = {
   cmsPath: '',
   canAccessAdmin: false,
   finishedFetching: false,
+  lmsIntegration: true,
 };
 
 SiteHeader.propTypes = {
@@ -135,6 +141,7 @@ SiteHeader.propTypes = {
   cmsPath: PropTypes.string,
   canAccessAdmin: PropTypes.bool,
   finishedFetching: PropTypes.bool,
+  lmsIntegration: PropTypes.bool,
 };
 
 export default SiteHeader;
